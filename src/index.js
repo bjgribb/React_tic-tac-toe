@@ -12,9 +12,11 @@ function Square (props) {
 
 class Board extends React.Component {
   renderSquare (i) {
-    return (<Square
-      value={this.props.squares[i]}
-      onClick={() => this.props.onClick(i)} />
+    return (
+      <Square
+        value={this.props.squares[i]}
+        onClick={() => this.props.onClick(i)}
+      />
     )
   }
 
@@ -45,9 +47,9 @@ class Game extends React.Component {
   constructor (props) {
     super(props)
     this.state = {
-      history: [{
-        squares: Array(9).fill(null)
-      }],
+      history: [
+        { squares: Array(9).fill(null) }
+      ],
       stepNumber: 0,
       xIsNext: true
     }
@@ -62,9 +64,10 @@ class Game extends React.Component {
     }
     squares[i] = this.state.xIsNext ? 'X' : 'O'
     this.setState({
-      history: history.concat([{
-        squares: squares
-      }]),
+      history: history.concat([
+        { squares: squares }
+      ]),
+      stepNumber: history.length,
       xIsNext: !this.state.xIsNext
     })
   }
@@ -78,7 +81,7 @@ class Game extends React.Component {
 
   render () {
     const history = this.state.history
-    const current = history[history.length - 1]
+    const current = history[this.state.stepNumber]
     const winner = calculateWinner(current.squares)
     const moves = history.map((step, move) => {
       const desc = move
@@ -92,7 +95,9 @@ class Game extends React.Component {
     })
 
     let status
-    if (winner) {
+    if (!winner && this.state.history.length === 10) {
+      status = 'This ones a draw.'
+    } else if (winner) {
       status = 'Winner: ' + winner
     } else {
       status = 'Next Player: ' + (this.state.xIsNext ? 'X' : 'O')
